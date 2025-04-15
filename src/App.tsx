@@ -13,6 +13,7 @@ function App() {
         theme={{
           token: {
             fontFamily: 'Pretendard, sans-serif',
+            borderRadius: 8,
           },
         }}
       >

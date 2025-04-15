@@ -8,7 +8,7 @@ import CheckboxSquareDisabled from '../SVG/icons/checkbox-square-disabled';
 import CheckboxSquareOff from '../SVG/icons/checkbox-square-off';
 import CheckboxSquareOn from '../SVG/icons/checkbox-square-on';
 
-interface ICheckBox extends LayoutProps, SpaceProps {
+interface ICheckbox extends LayoutProps, SpaceProps {
   name: string;
   children?: React.ReactNode;
   checked?: boolean;
@@ -25,7 +25,7 @@ interface IStyle extends LayoutProps, SpaceProps {
   fontSize: string;
 }
 
-const CheckBoxWrapper = styled.div<IStyle>`
+const CheckboxWrapper = styled.div<IStyle>`
   ${layout}
   ${space}
   display: flex;
@@ -45,7 +45,7 @@ const CheckBoxWrapper = styled.div<IStyle>`
 
 const { useToken } = theme;
 
-const CheckBox: React.FC<ICheckBox> = ({
+const CheckBox: React.FC<ICheckbox> = ({
   name,
   checked = false,
   children,
@@ -68,7 +68,7 @@ const CheckBox: React.FC<ICheckBox> = ({
     }
   };
   return (
-    <CheckBoxWrapper
+    <CheckboxWrapper
       onClick={onCheckClick}
       className={classNames(className, {
         disabled,
@@ -85,7 +85,7 @@ const CheckBox: React.FC<ICheckBox> = ({
         <CheckboxSquareOff width={width} height={height} />
       )}
       {children && <label htmlFor={name}>{children}</label>}
-    </CheckBoxWrapper>
+    </CheckboxWrapper>
   );
 };
 

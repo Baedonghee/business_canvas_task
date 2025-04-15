@@ -1,9 +1,12 @@
 import { Button, Layout, theme } from 'antd';
 import styled from 'styled-components';
 
+import Plus from 'components/SVG/icons/plus';
+import Table from 'components/Table';
 import Typography from 'components/Typography';
 
-const { Header, Content } = Layout;
+const { Header } = Layout;
+const { useToken } = theme;
 
 const HeaderWrapper = styled(Header)<{ bgColor: string }>`
   display: flex;
@@ -14,29 +17,44 @@ const HeaderWrapper = styled(Header)<{ bgColor: string }>`
   height: 48px;
 `;
 
-const data = [
-  {
-    name: '이름',
-    address: '주소',
-    memo: '메모',
-    joinDate: '2025-01-01',
-    job: '개발자',
-    isEmail: true,
-  },
+interface DataType {
+  key: string;
+  name: string;
+  age: number;
+  address: string;
+}
+
+const columns = [
+  { title: 'Name', dataIndex: 'name', render: (text: string) => <a>{text}</a> },
+  { title: 'Age', dataIndex: 'age' },
+  { title: 'Address', dataIndex: 'address' },
 ];
 
-const { useToken } = theme;
+const data: DataType[] = [
+  { key: '1', name: 'John Brown', age: 32, address: 'New York No. 1 Lake Park' },
+  { key: '2', name: 'Jim Green', age: 42, address: 'London No. 1 Lake Park' },
+  { key: '3', name: 'Joe Black', age: 32, address: 'Sydney No. 1 Lake Park' },
+  { key: '4', name: 'Disabled User', age: 99, address: 'Sydney No. 1 Lake Park' },
+];
 
 const Main = () => {
   const {
     token: { colorBgContainer },
   } = useToken();
+
   return (
     <>
       <HeaderWrapper bgColor={colorBgContainer}>
         <Typography>qwe</Typography>
-        <Button>추가</Button>
+        <Button type="primary" icon={<Plus width="16" height="16" />} style={{ padding: '0px 14px' }}>
+          추가
+        </Button>
       </HeaderWrapper>
+      <Table<DataType>
+        data={data}
+        columns={columns}
+        showCheckbox // Checkbox 표시 여부를 prop으로 전달
+      />
     </>
   );
 };

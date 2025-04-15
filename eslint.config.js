@@ -15,10 +15,10 @@ export default tseslint.config(
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
-    languageOptions: {
+    languageOptions: {  
       ecmaVersion: 2020,
       globals: globals.browser,
-    },
+    },  
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
@@ -27,7 +27,7 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      'unused-imports/no-unused-imports': 'warn',
+      'unused-imports/no-unused-imports': 'warn', 
       'unused-imports/no-unused-vars': [
         'warn',
         {
@@ -50,20 +50,19 @@ export default tseslint.config(
           groups: [
             // Packages `react` related packages come first.
             ['^react', '^@?\\w'],
-            // Internal packages.
             ['^(@|components)(/.*|$)'],
-            // Side effect imports.
             ['^\\u0000'],
-            // Parent imports. Put `..` last.
             ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
-            // Other relative imports. Put same-folder imports and `.` last.
             ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
-            // Style imports.
             ['^.+\\.?(css)$'],
           ],
         },
       ],
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      semi: ['error', 'always'],
+      quotes: ['error', 'single'],
+      'comma-dangle': ['error', 'always-multiline'],
+      'max-len': ['error', { code: 160 }],
     },
   },
 );
