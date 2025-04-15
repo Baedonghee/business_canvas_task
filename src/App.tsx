@@ -8,7 +8,14 @@ import GlobalStyle from 'styles/GlobalStyle';
 function App() {
   return (
     <StyleSheetManager shouldForwardProp={isPropValid}>
-      <ConfigProvider locale={koKR}>
+      <ConfigProvider
+        locale={koKR}
+        theme={{
+          token: {
+            fontFamily: 'Pretendard, sans-serif',
+          },
+        }}
+      >
         <GlobalStyle />
         <Layout>
           <Main />

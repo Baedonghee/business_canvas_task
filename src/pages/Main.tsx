@@ -1,18 +1,17 @@
-import { Layout } from 'antd';
+import { Button, Layout, theme } from 'antd';
 import styled from 'styled-components';
 
-import CheckBox from 'components/Checkbox';
 import Typography from 'components/Typography';
 
 const { Header, Content } = Layout;
 
-const HeaderWrapper = styled(Header)`
+const HeaderWrapper = styled(Header)<{ bgColor: string }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0;
-  background-color: #fff;
-  height: auto;
+  padding: 0px 14px;
+  background-color: ${({ bgColor }) => bgColor};
+  height: 48px;
 `;
 
 const data = [
@@ -26,14 +25,17 @@ const data = [
   },
 ];
 
+const { useToken } = theme;
+
 const Main = () => {
+  const {
+    token: { colorBgContainer },
+  } = useToken();
   return (
     <>
-      <HeaderWrapper>
+      <HeaderWrapper bgColor={colorBgContainer}>
         <Typography>qwe</Typography>
-        <CheckBox checked disabled>
-          qweaa
-        </CheckBox>
+        <Button>추가</Button>
       </HeaderWrapper>
     </>
   );
