@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import DropdownAndMoreButton from 'components/DropdownAndMoreButton';
 import MemberModal from 'components/MemberModal';
 import Button from 'components/UI/Button';
-import CheckBox from 'components/UI/Checkbox';
+import Checkbox from 'components/UI/Checkbox';
 import Plus from 'components/UI/SVG/icons/plus';
 import Table from 'components/UI/Table';
 import Typography from 'components/UI/Typography';
@@ -58,7 +58,7 @@ const Main = () => {
       memo: item.memo,
       joinDate: item.joinDate,
       job: item.job,
-      isEmail: <CheckBox name="isEmail1" checked={item.isEmail} readOnly />,
+      isEmail: <Checkbox name="isEmail1" checked={item.isEmail} readOnly />,
       more: <DropdownAndMoreButton />,
     }));
 

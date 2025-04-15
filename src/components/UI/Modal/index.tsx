@@ -4,7 +4,9 @@ import styled from 'styled-components';
 
 import Text from 'components/UI/Text';
 
-const StyledModal = styled(AntdModal)`
+const ModalWrapper = styled(AntdModal).withConfig({
+  shouldForwardProp: (prop) => prop !== 'theme',
+})`
   && {
     .ant-modal-content {
       padding: 0;
@@ -23,22 +25,27 @@ const StyledModal = styled(AntdModal)`
     }
 
     .ant-modal-footer {
-      color: ${({ theme }) => theme?.token?.colorPrimary || '#1890ff'};
+      color: ${({ theme }) => theme?.token.colorPrimary};
+      padding: ${({ theme }) => theme.token.paddingSM}px ${({ theme }) => theme?.token.padding}px;
+      margin-top: 0px;
+      background-color: ${({ theme }) => theme?.token.colorFillAlter};
+      border-top: 1px solid ${({ theme }) => theme?.token.colorSplit};
     }
   }
 `;
 
-const Modal = ({ isModalOpen, children }: { isModalOpen: boolean; children: React.ReactNode }) => {
+interface IModal {
+  isModalOpen: boolean;
+  children: React.ReactNode;
+  title: string;
+  footer: React.ReactNode;
+}
+
+const Modal = ({ isModalOpen, children, title, footer }: IModal) => {
   return (
-    <StyledModal
-      title={<Text fontSize="14px">회원 추가</Text>}
-      open={isModalOpen}
-      onOk={() => console.log('ok')}
-      onCancel={() => console.log('cancel')}
-      footer="Footer"
-    >
+    <ModalWrapper title={<Text fontSize="14px">{title}</Text>} open={isModalOpen} footer={footer}>
       {children}
-    </StyledModal>
+    </ModalWrapper>
   );
 };
 
