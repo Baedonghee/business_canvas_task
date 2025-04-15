@@ -5,6 +5,8 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import unusedImports from 'eslint-plugin-unused-imports';
+import prettier from 'eslint-config-prettier';
+import react from 'eslint-plugin-react';
 
 const styledComponentArrowFn = 'TaggedTemplateExpression > TemplateLiteral > ArrowFunctionExpression';
 
@@ -13,7 +15,7 @@ const ignoredNodes = [styledComponentArrowFn, `${styledComponentArrowFn} > Block
 export default tseslint.config(
   { ignores: ['dist'] },
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended, prettier],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
@@ -24,9 +26,11 @@ export default tseslint.config(
       'react-refresh': reactRefresh,
       'simple-import-sort': simpleImportSort,
       'unused-imports': unusedImports,
+      react,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      'react/no-unknown-property': 'error',
       'unused-imports/no-unused-imports': 'warn',
       'unused-imports/no-unused-vars': [
         'warn',
@@ -37,33 +41,25 @@ export default tseslint.config(
           argsIgnorePattern: '^_',
         },
       ],
-      indent: [
-        'error',
-        2,
-        {
-          ignoredNodes,
-        },
-      ],
+      indent: 'off',
       'simple-import-sort/imports': [
         'error',
         {
           groups: [
             // Packages `react` related packages come first.
             ['^react', '^@?\\w'],
-            // Internal packages.
             ['^(@|components)(/.*|$)'],
-            // Side effect imports.
             ['^\\u0000'],
-            // Parent imports. Put `..` last.
             ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
-            // Other relative imports. Put same-folder imports and `.` last.
             ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
-            // Style imports.
             ['^.+\\.?(css)$'],
           ],
         },
       ],
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+      semi: ['error', 'always'],
+      quotes: ['error', 'single'],
+      'comma-dangle': ['error', 'always-multiline'],
     },
   },
 );
