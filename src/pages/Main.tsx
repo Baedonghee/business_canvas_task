@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Layout, theme } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import db from 'common/db.json';
@@ -54,6 +54,12 @@ const Main = () => {
   } = useToken();
 
   const [data, setData] = useState<DataType[]>([]);
+  const [editUser, setEditUser] = useState<IUser | null>(null);
+
+  const handleDelete = useCallback((index: number) => {
+    userStorage.remove(index);
+    setData((prevData) => prevData.filter((_, i) => i !== index));
+  }, []);
 
   useEffect(() => {
     const users = userStorage.get();
@@ -65,11 +71,15 @@ const Main = () => {
       joinDate: user.joinDate,
       job: user.job,
       isEmail: <Checkbox name={`isEmail-${index}`} checked={user.isEmail} readOnly />,
-      more: <DropdownAndMoreButton />,
+      more: <DropdownAndMoreButton onEdit={() => handleEdit(user)} onDelete={() => handleDelete(index)} index={index} />,
     }));
 
     setData(newData);
-  }, []);
+  }, [handleDelete]);
+
+  const handleEdit = (user: IUser) => {
+    setEditUser(user);
+  };
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -91,7 +101,7 @@ const Main = () => {
         joinDate: user.joinDate,
         job: user.job,
         isEmail: <Checkbox name={`isEmail-${data.length}`} checked={user.isEmail} readOnly />,
-        more: <DropdownAndMoreButton />,
+        more: <DropdownAndMoreButton onEdit={() => handleEdit(user)} onDelete={() => handleDelete(data.length)} index={data.length} />,
       },
     ]);
   };
