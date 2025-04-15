@@ -4,13 +4,12 @@ import { ColumnsType } from 'antd/es/table';
 import db from 'common/db.json';
 import { jobListOption } from 'model/job-list';
 import styled from 'styled-components';
-import { IEditUser, IUser } from 'types/user';
+import { IEditUser, IUser, IUserDataType } from 'types/user';
+import { mapUserToDataType } from 'utils/mapUserToDataType';
 import { createStorage } from 'utils/storage';
 
-import DropdownAndMoreButton from 'components/DropdownAndMoreButton';
 import MemberModal from 'components/MemberModal';
 import Button from 'components/UI/Button';
-import Checkbox from 'components/UI/Checkbox';
 import Plus from 'components/UI/SVG/icons/plus';
 import Table from 'components/UI/Table';
 import Typography from 'components/UI/Typography';
@@ -27,19 +26,9 @@ const HeaderWrapper = styled(Header)<{ bgColor: string }>`
   height: 48px;
 `;
 
-interface DataType {
-  key: string;
-  name: string;
-  memo: string;
-  joinDate: string;
-  job: string;
-  isEmail: React.ReactNode;
-  more: React.ReactNode;
-}
-
 const userStorage = createStorage<IUser>('user-data', db.data);
 
-const columns: ColumnsType<DataType> = [
+const columns: ColumnsType<IUserDataType> = [
   { title: '이름', dataIndex: 'name' },
   { title: '메모', dataIndex: 'memo' },
   { title: '가입일', dataIndex: 'joinDate' },
@@ -54,7 +43,7 @@ const Main = () => {
     token: { colorBgContainer },
   } = useToken();
 
-  const [data, setData] = useState<DataType[]>([]);
+  const [data, setData] = useState<IUserDataType[]>([]);
   const [editUser, setEditUser] = useState<IEditUser | null>(null);
 
   const handleDelete = useCallback((index: number) => {
@@ -63,26 +52,13 @@ const Main = () => {
   }, []);
 
   const handleEdit = useCallback((user: IUser, key: string) => {
-    setEditUser({
-      key,
-      user,
-    });
+    setEditUser({ key, user });
     setIsModalOpen(true);
   }, []);
 
   useEffect(() => {
     const users = userStorage.get();
-
-    const newData: DataType[] = users.map((user, index) => ({
-      key: (index + 1).toString(),
-      name: user.name,
-      memo: user.memo,
-      joinDate: user.joinDate,
-      job: user.job,
-      isEmail: <Checkbox name={`isEmail-${index}`} checked={user.isEmail} readOnly />,
-      more: <DropdownAndMoreButton onEdit={() => handleEdit(user, (index + 1).toString())} onDelete={() => handleDelete(index)} index={index} />,
-    }));
-
+    const newData = users.map((user, index) => mapUserToDataType(user, index, handleEdit, handleDelete));
     setData(newData);
   }, [handleDelete, handleEdit]);
 
@@ -100,44 +76,25 @@ const Main = () => {
       ...user,
       job: jobListOption.find((item) => item.value === user.job)?.label || '',
     };
+
     if (!editUser) {
-      userStorage.set([...userStorage.get(), newUser]);
-      setIsModalOpen(false);
-      setData([
-        ...data,
-        {
-          ...newUser,
-          key: (data.length + 1).toString(),
-          isEmail: <Checkbox name={`isEmail-${data.length}`} checked={user.isEmail} readOnly />,
-          more: (
-            <DropdownAndMoreButton
-              onEdit={() => handleEdit(user, (data.length + 1).toString())}
-              onDelete={() => handleDelete(data.length)}
-              index={data.length}
-            />
-          ),
-        },
-      ]);
+      const updatedUsers = [...userStorage.get(), newUser];
+      userStorage.set(updatedUsers);
+      const newIndex = data.length;
+
+      setData([...data, mapUserToDataType(newUser, newIndex, handleEdit, handleDelete)]);
     } else {
       const index = data.findIndex((item) => item.key === editUser.key);
       if (index !== -1) {
-        userStorage.set(userStorage.get().map((item, i) => (i === index ? user : item)));
-        setData((prevData) =>
-          prevData.map((item, i) =>
-            i === index
-              ? {
-                  ...newUser,
-                  key: editUser.key,
-                  isEmail: <Checkbox name={`isEmail-${index}`} checked={user.isEmail} readOnly />,
-                  more: <DropdownAndMoreButton onEdit={() => handleEdit(user, editUser.key)} onDelete={() => handleDelete(index)} index={index} />,
-                }
-              : item,
-          ),
-        );
+        const updatedUsers = userStorage.get().map((item, i) => (i === index ? user : item));
+        userStorage.set(updatedUsers);
+
+        setData((prevData) => prevData.map((item, i) => (i === index ? mapUserToDataType(newUser, index, handleEdit, handleDelete) : item)));
       }
-      setIsModalOpen(false);
-      setEditUser(null);
     }
+
+    setIsModalOpen(false);
+    setEditUser(null);
   };
 
   return (
@@ -152,7 +109,7 @@ const Main = () => {
         </Button>
       </HeaderWrapper>
       <Content>
-        <Table<DataType> data={data} columns={columns} showCheckbox={true} />
+        <Table<IUserDataType> data={data} columns={columns} showCheckbox={true} size="small" />
       </Content>
     </>
   );

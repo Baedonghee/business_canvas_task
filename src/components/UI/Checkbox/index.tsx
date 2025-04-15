@@ -14,7 +14,7 @@ interface ICheckbox extends LayoutProps, SpaceProps {
   checked?: boolean;
   readOnly?: boolean;
   className?: string;
-  onChange?: (checked: boolean) => void; // ✅ 추가
+  onChange?: (checked: boolean) => void;
   disabled?: boolean;
   width?: string;
   height?: string;

@@ -3,7 +3,6 @@ import { Typography as AntdTypography } from 'antd';
 import { TextProps } from 'antd/es/typography/Text';
 import styled from 'styled-components';
 
-// styled-system + TitleProps 조합
 type ITypographyProps = SpaceProps & LayoutProps & ColorProps & FlexboxProps & TypographyProps & TextProps;
 
 const { Text: AntdText } = AntdTypography;

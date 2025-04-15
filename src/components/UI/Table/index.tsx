@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import Checkbox from 'components/UI/Checkbox';
 
-interface ITable<T extends { key: string }> {
+interface ITable<T extends { key: string }> extends Omit<TableProps<T>, 'dataSource' | 'columns' | 'rowSelection' | 'pagination'> {
   data: T[];
   columns: TableColumnsType<T>;
   showCheckbox?: boolean;
@@ -18,7 +18,7 @@ const TableWrapper = styled.div`
   }
 `;
 
-const Table = <T extends { key: string }>({ data, columns, showCheckbox = true, pagination = false }: ITable<T>) => {
+const Table = <T extends { key: string }>({ data, columns, showCheckbox = true, pagination = false, ...props }: ITable<T>) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const rowSelection: TableProps<T>['rowSelection'] = showCheckbox
@@ -58,7 +58,7 @@ const Table = <T extends { key: string }>({ data, columns, showCheckbox = true, 
 
   return (
     <TableWrapper>
-      <AntdTable rowSelection={rowSelection} columns={columns} dataSource={data} rowKey="key" pagination={pagination || false} />
+      <AntdTable rowSelection={rowSelection} columns={columns} dataSource={data} rowKey="key" pagination={pagination || false} {...props} />
     </TableWrapper>
   );
 };

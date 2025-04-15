@@ -3,7 +3,6 @@ import { Button as AntdButton } from 'antd';
 import { ButtonProps } from 'antd/es/button';
 import styled from 'styled-components';
 
-// styled-system + ButtonProps 조합
 type IButtonProps = ButtonProps & SpaceProps & LayoutProps & ColorProps & TypographyProps & FlexboxProps;
 
 const Button = styled(AntdButton).withConfig({
