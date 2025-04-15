@@ -5,13 +5,14 @@ import initialData from 'common/db.json';
 import styled from 'styled-components';
 
 import DropdownAndMoreButton from 'components/DropdownAndMoreButton';
+import MemberModal from 'components/MemberModal';
 import Button from 'components/UI/Button';
 import CheckBox from 'components/UI/Checkbox';
 import Plus from 'components/UI/SVG/icons/plus';
 import Table from 'components/UI/Table';
 import Typography from 'components/UI/Typography';
 
-const { Header } = Layout;
+const { Header, Content } = Layout;
 const { useToken } = theme;
 
 const HeaderWrapper = styled(Header)<{ bgColor: string }>`
@@ -66,6 +67,7 @@ const Main = () => {
 
   return (
     <>
+      <MemberModal />
       <HeaderWrapper bgColor={colorBgContainer}>
         <Typography level={5} mb="0px">
           회원 목록
@@ -74,7 +76,9 @@ const Main = () => {
           추가
         </Button>
       </HeaderWrapper>
-      <Table<DataType> data={data} columns={columns} showCheckbox={true} />
+      <Content>
+        <Table<DataType> data={data} columns={columns} showCheckbox={true} />
+      </Content>
     </>
   );
 };
