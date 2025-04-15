@@ -2,11 +2,11 @@ import { Button, Layout, theme } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import styled from 'styled-components';
 
-import CheckBox from 'components/Checkbox';
-import More from 'components/SVG/icons/more';
-import Plus from 'components/SVG/icons/plus';
-import Table from 'components/Table';
-import Typography from 'components/Typography';
+import DropdownAndMoreButton from 'components/DropdownAndMoreButton';
+import CheckBox from 'components/UI/Checkbox';
+import Plus from 'components/UI/SVG/icons/plus';
+import Table from 'components/UI/Table';
+import Typography from 'components/UI/Typography';
 
 const { Header } = Layout;
 const { useToken } = theme;
@@ -47,7 +47,7 @@ const data: DataType[] = [
     joinDate: '2021-01-01',
     job: '개발자',
     isEmail: <CheckBox name="isEmail1" checked={true} readOnly />,
-    more: <Button type="text" icon={<More width="16" height="16" />}></Button>,
+    more: <DropdownAndMoreButton />,
   },
   {
     key: '2',
@@ -56,7 +56,7 @@ const data: DataType[] = [
     joinDate: '2021-01-01',
     job: '개발자',
     isEmail: <CheckBox name="isEmail2" checked={false} />,
-    more: <Button type="text" icon={<More width="16" height="16" />}></Button>,
+    more: <DropdownAndMoreButton />,
   },
 ];
 
@@ -68,7 +68,9 @@ const Main = () => {
   return (
     <>
       <HeaderWrapper bgColor={colorBgContainer}>
-        <Typography>qwe</Typography>
+        <Typography level={5} mb="0px">
+          회원 목록
+        </Typography>
         <Button type="primary" icon={<Plus width="16" height="16" />} style={{ padding: '0px 14px' }}>
           추가
         </Button>

@@ -3,7 +3,7 @@ import type { TableColumnsType, TablePaginationConfig, TableProps } from 'antd';
 import { Table as AntdTable } from 'antd';
 import styled from 'styled-components';
 
-import Checkbox from 'components/Checkbox';
+import Checkbox from 'components/UI/Checkbox';
 
 interface ITable<T extends { key: string }> {
   data: T[];
