@@ -32,7 +32,7 @@ const Table = <T extends { key: string }>({ data, columns, showCheckbox = true, 
           <Checkbox
             name="select-all"
             checked={data.length > 0 && selectedRowKeys.length === data.length}
-            onClick={() => {
+            onChange={() => {
               const newSelectedRowKeys = selectedRowKeys.length === data.length ? [] : data.map((item) => (item as T).key);
               setSelectedRowKeys(newSelectedRowKeys);
             }}
@@ -44,7 +44,7 @@ const Table = <T extends { key: string }>({ data, columns, showCheckbox = true, 
             <Checkbox
               name={record['key']}
               checked={checked}
-              onClick={() => {
+              onChange={() => {
                 const key = record['key'] as React.Key;
                 // 체크 확인
                 const newSelectedRowKeys = checked ? selectedRowKeys.filter((k) => k !== key) : [...selectedRowKeys, key];

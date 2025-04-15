@@ -9,7 +9,9 @@ const DatePicker = ({ todayHidden = false, ...props }: IDatePicker) => {
   useEffect(() => {
     const footer = document.querySelector('.ant-picker-footer') as HTMLElement;
     if (footer) {
-      footer.style.display = todayHidden ? 'none' : 'block';
+      setTimeout(() => {
+        footer.style.display = todayHidden ? 'none' : 'block';
+      }, 100);
     }
   }, [todayHidden]);
 

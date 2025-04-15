@@ -3,7 +3,7 @@ import { Layout, theme } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import db from 'common/db.json';
 import styled from 'styled-components';
-import { User } from 'types/user';
+import { IUser } from 'types/user';
 import { createStorage } from 'utils/storage';
 
 import DropdownAndMoreButton from 'components/DropdownAndMoreButton';
@@ -36,7 +36,7 @@ interface DataType {
   more: React.ReactNode;
 }
 
-const userStorage = createStorage<User>('user-data', db.data);
+const userStorage = createStorage<IUser>('user-data', db.data);
 
 const columns: ColumnsType<DataType> = [
   { title: '이름', dataIndex: 'name' },
@@ -48,6 +48,7 @@ const columns: ColumnsType<DataType> = [
 ];
 
 const Main = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     token: { colorBgContainer },
   } = useToken();
@@ -70,14 +71,22 @@ const Main = () => {
     setData(newData);
   }, []);
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <>
-      <MemberModal />
+      <MemberModal isModalOpen={isModalOpen} onClose={handleCloseModal} onSubmit={() => setIsModalOpen(false)} />
       <HeaderWrapper bgColor={colorBgContainer}>
         <Typography level={5} mb="0px">
           회원 목록
         </Typography>
-        <Button type="primary" icon={<Plus width="16" height="16" />} p="0px 14px">
+        <Button type="primary" icon={<Plus width="16" height="16" />} p="0px 14px" onClick={handleOpenModal}>
           추가
         </Button>
       </HeaderWrapper>

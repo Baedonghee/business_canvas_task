@@ -14,7 +14,7 @@ interface ICheckbox extends LayoutProps, SpaceProps {
   checked?: boolean;
   readOnly?: boolean;
   className?: string;
-  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  onChange?: (checked: boolean) => void; // ✅ 추가
   disabled?: boolean;
   width?: string;
   height?: string;
@@ -52,7 +52,7 @@ const Checkbox: React.FC<ICheckbox> = ({
   children,
   readOnly = false,
   className,
-  onClick,
+  onChange,
   disabled = false,
   width = '16',
   height = '16',
@@ -65,9 +65,8 @@ const Checkbox: React.FC<ICheckbox> = ({
       e.stopPropagation();
       return;
     }
-    if (onClick) {
-      onClick(e);
-    }
+    const newChecked = !checked;
+    onChange?.(newChecked);
   };
   return (
     <CheckboxWrapper

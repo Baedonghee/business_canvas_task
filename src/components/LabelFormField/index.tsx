@@ -5,14 +5,15 @@ import Text from 'components/UI/Text';
 
 interface ILabelFormField {
   label: string;
+  name: string;
   required?: boolean;
   children: React.ReactNode;
-  errorText?: string;
+  errorMessage?: string;
 }
 
 const { useToken } = theme;
 
-const LabelFormField = ({ label, children, required = false, errorText }: ILabelFormField) => {
+const LabelFormField = ({ label, required = false, children, errorMessage }: ILabelFormField) => {
   const { token } = useToken();
 
   return (
@@ -28,9 +29,9 @@ const LabelFormField = ({ label, children, required = false, errorText }: ILabel
         )}
       </Flex>
       <Flex mt={`${token.marginXS}px`}>{children}</Flex>
-      {errorText && (
+      {errorMessage && (
         <Text fontSize={token.fontSizeSM} type="danger">
-          {errorText}
+          {errorMessage}
         </Text>
       )}
     </Flex>
