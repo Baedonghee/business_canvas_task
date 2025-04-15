@@ -79,9 +79,26 @@ const Main = () => {
     setIsModalOpen(false);
   };
 
+  const handleUserSubmit = (user: IUser) => {
+    userStorage.set([...userStorage.get(), user]);
+    setIsModalOpen(false);
+    setData([
+      ...data,
+      {
+        key: (data.length + 1).toString(),
+        name: user.name,
+        memo: user.memo,
+        joinDate: user.joinDate,
+        job: user.job,
+        isEmail: <Checkbox name={`isEmail-${data.length}`} checked={user.isEmail} readOnly />,
+        more: <DropdownAndMoreButton />,
+      },
+    ]);
+  };
+
   return (
     <>
-      <MemberModal isModalOpen={isModalOpen} onClose={handleCloseModal} onSubmit={() => setIsModalOpen(false)} />
+      <MemberModal isModalOpen={isModalOpen} onClose={handleCloseModal} onSubmit={handleUserSubmit} />
       <HeaderWrapper bgColor={colorBgContainer}>
         <Typography level={5} mb="0px">
           회원 목록

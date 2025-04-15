@@ -26,6 +26,7 @@ const MemberModal = ({ isModalOpen, onClose, onSubmit }: IMemberModal) => {
     control,
     handleSubmit: handleSubmitForm,
     formState: { errors, isValid, isDirty },
+    reset,
   } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -39,6 +40,7 @@ const MemberModal = ({ isModalOpen, onClose, onSubmit }: IMemberModal) => {
   });
   const handleSubmit = handleSubmitForm((values) => {
     onSubmit(values);
+    reset();
   });
 
   return (
