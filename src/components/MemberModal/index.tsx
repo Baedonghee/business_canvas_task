@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Input, Select, theme } from 'antd';
 import dayjs from 'dayjs';
@@ -16,16 +17,18 @@ const { useToken } = theme;
 
 interface IMemberModal {
   isModalOpen: boolean;
+  editUser?: IUser | null;
   onClose: () => void;
   onSubmit: (user: IUser) => void;
 }
 
-const MemberModal = ({ isModalOpen, onClose, onSubmit }: IMemberModal) => {
+const MemberModal = ({ isModalOpen, editUser, onClose, onSubmit }: IMemberModal) => {
   const { token } = useToken();
   const {
     control,
     handleSubmit: handleSubmitForm,
-    formState: { errors, isValid, isDirty },
+    trigger,
+    formState: { errors, isValid },
     reset,
   } = useForm({
     mode: 'onChange',
@@ -38,22 +41,42 @@ const MemberModal = ({ isModalOpen, onClose, onSubmit }: IMemberModal) => {
       isEmail: false,
     },
   });
+
+  useEffect(() => {
+    if (editUser) {
+      reset(editUser);
+      trigger();
+    } else {
+      reset({
+        name: '',
+        address: '',
+        memo: '',
+        joinDate: '',
+        job: jobListOption[0].value,
+        isEmail: false,
+      });
+    }
+  }, [editUser, reset, trigger]);
+
   const handleSubmit = handleSubmitForm((values) => {
     onSubmit(values);
-    reset();
   });
+
+  const handleClose = () => {
+    onClose();
+  };
 
   return (
     <Modal
       isModalOpen={isModalOpen}
-      title="회원 추가"
-      onCancel={onClose}
+      title={editUser ? '회원 수정' : '회원 추가'}
+      onCancel={handleClose}
       footer={[
-        <Button key="back" onClick={onClose}>
+        <Button key="back" onClick={handleClose}>
           취소
         </Button>,
-        <Button key="submit" type="primary" htmlType="submit" onClick={handleSubmit} disabled={!isValid || !isDirty}>
-          추가
+        <Button key="submit" type="primary" htmlType="submit" onClick={handleSubmit} disabled={!isValid}>
+          {editUser ? '수정' : '추가'}
         </Button>,
       ]}
     >

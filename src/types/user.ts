@@ -6,3 +6,8 @@ export interface IUser {
   job: string;
   isEmail: boolean;
 }
+
+export interface IEditUser {
+  key: string;
+  user: IUser;
+}

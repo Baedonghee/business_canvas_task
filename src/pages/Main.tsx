@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { Layout, theme } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import db from 'common/db.json';
+import { jobListOption } from 'model/job-list';
 import styled from 'styled-components';
-import { IUser } from 'types/user';
+import { IEditUser, IUser } from 'types/user';
 import { createStorage } from 'utils/storage';
 
 import DropdownAndMoreButton from 'components/DropdownAndMoreButton';
@@ -54,11 +55,19 @@ const Main = () => {
   } = useToken();
 
   const [data, setData] = useState<DataType[]>([]);
-  const [editUser, setEditUser] = useState<IUser | null>(null);
+  const [editUser, setEditUser] = useState<IEditUser | null>(null);
 
   const handleDelete = useCallback((index: number) => {
     userStorage.remove(index);
     setData((prevData) => prevData.filter((_, i) => i !== index));
+  }, []);
+
+  const handleEdit = useCallback((user: IUser, key: string) => {
+    setEditUser({
+      key,
+      user,
+    });
+    setIsModalOpen(true);
   }, []);
 
   useEffect(() => {
@@ -71,15 +80,11 @@ const Main = () => {
       joinDate: user.joinDate,
       job: user.job,
       isEmail: <Checkbox name={`isEmail-${index}`} checked={user.isEmail} readOnly />,
-      more: <DropdownAndMoreButton onEdit={() => handleEdit(user)} onDelete={() => handleDelete(index)} index={index} />,
+      more: <DropdownAndMoreButton onEdit={() => handleEdit(user, (index + 1).toString())} onDelete={() => handleDelete(index)} index={index} />,
     }));
 
     setData(newData);
-  }, [handleDelete]);
-
-  const handleEdit = (user: IUser) => {
-    setEditUser(user);
-  };
+  }, [handleDelete, handleEdit]);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -87,28 +92,57 @@ const Main = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setEditUser(null);
   };
 
   const handleUserSubmit = (user: IUser) => {
-    userStorage.set([...userStorage.get(), user]);
-    setIsModalOpen(false);
-    setData([
-      ...data,
-      {
-        key: (data.length + 1).toString(),
-        name: user.name,
-        memo: user.memo,
-        joinDate: user.joinDate,
-        job: user.job,
-        isEmail: <Checkbox name={`isEmail-${data.length}`} checked={user.isEmail} readOnly />,
-        more: <DropdownAndMoreButton onEdit={() => handleEdit(user)} onDelete={() => handleDelete(data.length)} index={data.length} />,
-      },
-    ]);
+    const newUser = {
+      ...user,
+      job: jobListOption.find((item) => item.value === user.job)?.label || '',
+    };
+    if (!editUser) {
+      userStorage.set([...userStorage.get(), newUser]);
+      setIsModalOpen(false);
+      setData([
+        ...data,
+        {
+          ...newUser,
+          key: (data.length + 1).toString(),
+          isEmail: <Checkbox name={`isEmail-${data.length}`} checked={user.isEmail} readOnly />,
+          more: (
+            <DropdownAndMoreButton
+              onEdit={() => handleEdit(user, (data.length + 1).toString())}
+              onDelete={() => handleDelete(data.length)}
+              index={data.length}
+            />
+          ),
+        },
+      ]);
+    } else {
+      const index = data.findIndex((item) => item.key === editUser.key);
+      if (index !== -1) {
+        userStorage.set(userStorage.get().map((item, i) => (i === index ? user : item)));
+        setData((prevData) =>
+          prevData.map((item, i) =>
+            i === index
+              ? {
+                  ...newUser,
+                  key: editUser.key,
+                  isEmail: <Checkbox name={`isEmail-${index}`} checked={user.isEmail} readOnly />,
+                  more: <DropdownAndMoreButton onEdit={() => handleEdit(user, editUser.key)} onDelete={() => handleDelete(index)} index={index} />,
+                }
+              : item,
+          ),
+        );
+      }
+      setIsModalOpen(false);
+      setEditUser(null);
+    }
   };
 
   return (
     <>
-      <MemberModal isModalOpen={isModalOpen} onClose={handleCloseModal} onSubmit={handleUserSubmit} />
+      <MemberModal isModalOpen={isModalOpen} onClose={handleCloseModal} onSubmit={handleUserSubmit} editUser={editUser?.user} />
       <HeaderWrapper bgColor={colorBgContainer}>
         <Typography level={5} mb="0px">
           회원 목록

@@ -54,7 +54,10 @@ const createLocalStorage = <T>(key: string): StorageEngine<T> => ({
     localStorage.removeItem(key);
   },
   init: (initialData: T[]) => {
-    if (!localStorage.getItem(key)) {
+    const raw = localStorage.getItem(key);
+    const parsed = raw ? JSON.parse(raw) : null;
+
+    if (!raw || !Array.isArray(parsed) || parsed.length === 0) {
       localStorage.setItem(key, JSON.stringify(initialData));
     }
   },
