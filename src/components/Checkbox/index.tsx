@@ -12,6 +12,7 @@ interface ICheckbox extends LayoutProps, SpaceProps {
   name: string;
   children?: React.ReactNode;
   checked?: boolean;
+  readOnly?: boolean;
   className?: string;
   onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   disabled?: boolean;
@@ -49,6 +50,7 @@ const CheckBox: React.FC<ICheckbox> = ({
   name,
   checked = false,
   children,
+  readOnly = false,
   className,
   onClick,
   disabled = false,
@@ -59,7 +61,7 @@ const CheckBox: React.FC<ICheckbox> = ({
 }) => {
   const { token } = useToken();
   const onCheckClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (disabled) {
+    if (disabled || readOnly) {
       e.stopPropagation();
       return;
     }
@@ -71,7 +73,7 @@ const CheckBox: React.FC<ICheckbox> = ({
     <CheckboxWrapper
       onClick={onCheckClick}
       className={classNames(className, {
-        disabled,
+        disabled: disabled,
       })}
       isLabel={!!children}
       fontSize={fontSize}

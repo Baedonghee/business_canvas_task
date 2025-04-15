@@ -5,6 +5,8 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import unusedImports from 'eslint-plugin-unused-imports';
+import prettier from 'eslint-config-prettier';
+import react from 'eslint-plugin-react';
 
 const styledComponentArrowFn = 'TaggedTemplateExpression > TemplateLiteral > ArrowFunctionExpression';
 
@@ -13,21 +15,23 @@ const ignoredNodes = [styledComponentArrowFn, `${styledComponentArrowFn} > Block
 export default tseslint.config(
   { ignores: ['dist'] },
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended, prettier],
     files: ['**/*.{ts,tsx}'],
-    languageOptions: {  
+    languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
-    },  
+    },
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       'simple-import-sort': simpleImportSort,
       'unused-imports': unusedImports,
+      react,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      'unused-imports/no-unused-imports': 'warn', 
+      'react/no-unknown-property': 'error',
+      'unused-imports/no-unused-imports': 'warn',
       'unused-imports/no-unused-vars': [
         'warn',
         {
@@ -37,13 +41,7 @@ export default tseslint.config(
           argsIgnorePattern: '^_',
         },
       ],
-      indent: [
-        'error',
-        2,
-        {
-          ignoredNodes,
-        },
-      ],
+      indent: 'off',
       'simple-import-sort/imports': [
         'error',
         {
@@ -62,7 +60,6 @@ export default tseslint.config(
       semi: ['error', 'always'],
       quotes: ['error', 'single'],
       'comma-dangle': ['error', 'always-multiline'],
-      'max-len': ['error', { code: 160 }],
     },
   },
 );

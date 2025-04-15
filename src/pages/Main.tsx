@@ -1,6 +1,9 @@
 import { Button, Layout, theme } from 'antd';
+import { ColumnsType } from 'antd/es/table';
 import styled from 'styled-components';
 
+import CheckBox from 'components/Checkbox';
+import More from 'components/SVG/icons/more';
 import Plus from 'components/SVG/icons/plus';
 import Table from 'components/Table';
 import Typography from 'components/Typography';
@@ -20,21 +23,41 @@ const HeaderWrapper = styled(Header)<{ bgColor: string }>`
 interface DataType {
   key: string;
   name: string;
-  age: number;
-  address: string;
+  memo: string;
+  joinDate: string;
+  job: string;
+  isEmail: React.ReactNode;
+  more: React.ReactNode;
 }
 
-const columns = [
-  { title: 'Name', dataIndex: 'name', render: (text: string) => <a>{text}</a> },
-  { title: 'Age', dataIndex: 'age' },
-  { title: 'Address', dataIndex: 'address' },
+const columns: ColumnsType<DataType> = [
+  { title: '이름', dataIndex: 'name' },
+  { title: '메모', dataIndex: 'memo' },
+  { title: '가입일', dataIndex: 'joinDate' },
+  { title: '직업', dataIndex: 'job' },
+  { title: '이메일 수신 동의', dataIndex: 'isEmail' },
+  { title: '', dataIndex: 'more', width: 48, align: 'center' },
 ];
 
 const data: DataType[] = [
-  { key: '1', name: 'John Brown', age: 32, address: 'New York No. 1 Lake Park' },
-  { key: '2', name: 'Jim Green', age: 42, address: 'London No. 1 Lake Park' },
-  { key: '3', name: 'Joe Black', age: 32, address: 'Sydney No. 1 Lake Park' },
-  { key: '4', name: 'Disabled User', age: 99, address: 'Sydney No. 1 Lake Park' },
+  {
+    key: '1',
+    name: '홍길동',
+    memo: '홍길동 메모',
+    joinDate: '2021-01-01',
+    job: '개발자',
+    isEmail: <CheckBox name="isEmail1" checked={true} readOnly />,
+    more: <Button type="text" icon={<More width="16" height="16" />}></Button>,
+  },
+  {
+    key: '2',
+    name: '이순신',
+    memo: '이순신 메모',
+    joinDate: '2021-01-01',
+    job: '개발자',
+    isEmail: <CheckBox name="isEmail2" checked={false} />,
+    more: <Button type="text" icon={<More width="16" height="16" />}></Button>,
+  },
 ];
 
 const Main = () => {
@@ -50,11 +73,7 @@ const Main = () => {
           추가
         </Button>
       </HeaderWrapper>
-      <Table<DataType>
-        data={data}
-        columns={columns}
-        showCheckbox // Checkbox 표시 여부를 prop으로 전달
-      />
+      <Table<DataType> data={data} columns={columns} showCheckbox={true} />
     </>
   );
 };
