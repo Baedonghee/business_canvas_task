@@ -46,7 +46,7 @@ const CheckboxWrapper = styled.div<IStyle>`
 
 const { useToken } = theme;
 
-const CheckBox: React.FC<ICheckbox> = ({
+const Checkbox: React.FC<ICheckbox> = ({
   name,
   checked = false,
   children,
@@ -91,4 +91,4 @@ const CheckBox: React.FC<ICheckbox> = ({
   );
 };
 
-export default CheckBox;
+export default Checkbox;

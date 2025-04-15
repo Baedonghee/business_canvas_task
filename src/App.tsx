@@ -1,11 +1,15 @@
 import isPropValid from '@emotion/is-prop-valid';
-import { ConfigProvider, Layout } from 'antd';
+import { ConfigProvider, Layout, theme } from 'antd';
 import koKR from 'antd/locale/ko_KR';
 import Main from 'pages/Main';
-import { StyleSheetManager } from 'styled-components';
+import { StyleSheetManager, ThemeProvider } from 'styled-components';
 import GlobalStyle from 'styles/GlobalStyle';
 
+const { useToken } = theme;
+
 function App() {
+  const { token } = useToken();
+
   return (
     <StyleSheetManager shouldForwardProp={isPropValid}>
       <ConfigProvider
@@ -17,10 +21,16 @@ function App() {
           },
         }}
       >
-        <GlobalStyle />
-        <Layout>
-          <Main />
-        </Layout>
+        <ThemeProvider
+          theme={{
+            token,
+          }}
+        >
+          <GlobalStyle />
+          <Layout>
+            <Main />
+          </Layout>
+        </ThemeProvider>
       </ConfigProvider>
     </StyleSheetManager>
   );
