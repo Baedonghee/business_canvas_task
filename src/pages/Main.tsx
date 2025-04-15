@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Layout, theme } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import initialData from 'common/db.json';
+import db from 'common/db.json';
 import styled from 'styled-components';
+import { User } from 'types/user';
+import { createStorage } from 'utils/storage';
 
 import DropdownAndMoreButton from 'components/DropdownAndMoreButton';
 import MemberModal from 'components/MemberModal';
@@ -34,6 +36,8 @@ interface DataType {
   more: React.ReactNode;
 }
 
+const userStorage = createStorage<User>('user-data', db.data);
+
 const columns: ColumnsType<DataType> = [
   { title: '이름', dataIndex: 'name' },
   { title: '메모', dataIndex: 'memo' },
@@ -51,14 +55,15 @@ const Main = () => {
   const [data, setData] = useState<DataType[]>([]);
 
   useEffect(() => {
-    const { data } = initialData;
-    const newData = data.map((item, index) => ({
+    const users = userStorage.get();
+
+    const newData: DataType[] = users.map((user, index) => ({
       key: (index + 1).toString(),
-      name: item.name,
-      memo: item.memo,
-      joinDate: item.joinDate,
-      job: item.job,
-      isEmail: <Checkbox name="isEmail1" checked={item.isEmail} readOnly />,
+      name: user.name,
+      memo: user.memo,
+      joinDate: user.joinDate,
+      job: user.job,
+      isEmail: <Checkbox name={`isEmail-${index}`} checked={user.isEmail} readOnly />,
       more: <DropdownAndMoreButton />,
     }));
 

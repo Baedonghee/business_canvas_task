@@ -17,7 +17,7 @@ const MemberModal = () => {
 
   return (
     <Modal
-      isModalOpen
+      isModalOpen={false}
       title="회원 추가"
       footer={[
         <Button key="back">취소</Button>,
