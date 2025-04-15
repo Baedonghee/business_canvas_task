@@ -7,10 +7,6 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "baseUrl": "./src",
-    "paths": {
-      "@components/*": ["src/components/*"],
-      "@styles/*": ["src/styles/*"]
-    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",
