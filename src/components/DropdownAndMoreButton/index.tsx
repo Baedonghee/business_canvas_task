@@ -1,5 +1,6 @@
-import { Button, Dropdown } from 'antd';
+import { Dropdown } from 'antd';
 
+import Button from 'components/UI/Button';
 import More from 'components/UI/SVG/icons/more';
 import Text from 'components/UI/Text';
 

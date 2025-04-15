@@ -1,8 +1,11 @@
-import { Button, Layout, theme } from 'antd';
+import { useEffect, useState } from 'react';
+import { Layout, theme } from 'antd';
 import { ColumnsType } from 'antd/es/table';
+import initialData from 'common/db.json';
 import styled from 'styled-components';
 
 import DropdownAndMoreButton from 'components/DropdownAndMoreButton';
+import Button from 'components/UI/Button';
 import CheckBox from 'components/UI/Checkbox';
 import Plus from 'components/UI/SVG/icons/plus';
 import Table from 'components/UI/Table';
@@ -39,31 +42,27 @@ const columns: ColumnsType<DataType> = [
   { title: '', dataIndex: 'more', width: 48, align: 'center' },
 ];
 
-const data: DataType[] = [
-  {
-    key: '1',
-    name: '홍길동',
-    memo: '홍길동 메모',
-    joinDate: '2021-01-01',
-    job: '개발자',
-    isEmail: <CheckBox name="isEmail1" checked={true} readOnly />,
-    more: <DropdownAndMoreButton />,
-  },
-  {
-    key: '2',
-    name: '이순신',
-    memo: '이순신 메모',
-    joinDate: '2021-01-01',
-    job: '개발자',
-    isEmail: <CheckBox name="isEmail2" checked={false} />,
-    more: <DropdownAndMoreButton />,
-  },
-];
-
 const Main = () => {
   const {
     token: { colorBgContainer },
   } = useToken();
+
+  const [data, setData] = useState<DataType[]>([]);
+
+  useEffect(() => {
+    const { data } = initialData;
+    const newData = data.map((item, index) => ({
+      key: (index + 1).toString(),
+      name: item.name,
+      memo: item.memo,
+      joinDate: item.joinDate,
+      job: item.job,
+      isEmail: <CheckBox name="isEmail1" checked={item.isEmail} readOnly />,
+      more: <DropdownAndMoreButton />,
+    }));
+
+    setData(newData);
+  }, []);
 
   return (
     <>
@@ -71,7 +70,7 @@ const Main = () => {
         <Typography level={5} mb="0px">
           회원 목록
         </Typography>
-        <Button type="primary" icon={<Plus width="16" height="16" />} style={{ padding: '0px 14px' }}>
+        <Button type="primary" icon={<Plus width="16" height="16" />} p="0px 14px">
           추가
         </Button>
       </HeaderWrapper>
