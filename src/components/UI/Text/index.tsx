@@ -3,11 +3,15 @@ import { Typography as AntdTypography } from 'antd';
 import { TextProps } from 'antd/es/typography/Text';
 import styled from 'styled-components';
 
-// styled-system + TitleProps 조합
 type ITypographyProps = SpaceProps & LayoutProps & ColorProps & FlexboxProps & TypographyProps & TextProps;
 
 const { Text: AntdText } = AntdTypography;
 
+/**
+ * 텍스트
+ * @param props 속성
+ * @returns
+ */
 const Text = styled(AntdText).withConfig({
   shouldForwardProp: (prop) => !['m', 'p', 'color', 'bg', 'display', 'fontSize', 'fontWeight', 'textAlign'].includes(prop),
 })<ITypographyProps>`

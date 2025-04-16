@@ -7,6 +7,11 @@ type ITypographyProps = SpaceProps & LayoutProps & ColorProps & FlexboxProps & T
 
 const { Title: AntdTitle } = AntdTypography;
 
+/**
+ * 타이틀
+ * @param props 속성
+ * @returns
+ */
 const Title = styled(AntdTitle).withConfig({
   shouldForwardProp: (prop) => !['m', 'p', 'color', 'bg', 'display', 'fontSize', 'fontWeight', 'textAlign'].includes(prop),
 })<ITypographyProps>`

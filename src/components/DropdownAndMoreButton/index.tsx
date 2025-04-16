@@ -1,10 +1,22 @@
-import { Dropdown } from 'antd';
+import { Dropdown, Flex } from 'antd';
 
 import Button from 'components/UI/Button';
 import More from 'components/UI/SVG/icons/more';
 import Text from 'components/UI/Text';
 
-const DropdownAndMoreButton = () => {
+interface IDropdownAndMoreButton {
+  onEdit: () => void;
+  onDelete: () => void;
+  index: number;
+}
+/**
+ * 드롭다운 버튼
+ * @param onEdit 수정
+ * @param onDelete 삭제
+ * @param index 인덱스
+ * @returns
+ */
+const DropdownAndMoreButton = ({ onEdit, onDelete, index }: IDropdownAndMoreButton) => {
   return (
     <Dropdown
       trigger={['click']}
@@ -13,11 +25,25 @@ const DropdownAndMoreButton = () => {
       }}
       menu={{
         items: [
-          { key: '1', label: <Text>수정</Text> },
+          {
+            key: `menu-edit-${index}`,
+            label: (
+              <Flex role="button" onClick={onEdit}>
+                <Text>수정</Text>
+              </Flex>
+            ),
+          },
           {
             type: 'divider',
           },
-          { key: '2', label: <Text type="danger">삭제</Text> },
+          {
+            key: `menu-delete-${index}`,
+            label: (
+              <Flex role="button" onClick={onDelete}>
+                <Text type="danger">삭제</Text>
+              </Flex>
+            ),
+          },
         ],
       }}
     >

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import Checkbox from 'components/UI/Checkbox';
 
-interface ITable<T extends { key: string }> {
+interface ITable<T extends { key: string }> extends Omit<TableProps<T>, 'dataSource' | 'columns' | 'rowSelection' | 'pagination'> {
   data: T[];
   columns: TableColumnsType<T>;
   showCheckbox?: boolean;
@@ -18,7 +18,14 @@ const TableWrapper = styled.div`
   }
 `;
 
-const Table = <T extends { key: string }>({ data, columns, showCheckbox = true, pagination = false }: ITable<T>) => {
+/**
+ * 테이블
+ * @param data 데이터
+ * @param columns 열
+ * @param showCheckbox 체크박스 표시 여부
+ * @param pagination 페이지네이션 여부
+ */
+const Table = <T extends { key: string }>({ data, columns, showCheckbox = true, pagination = false, ...props }: ITable<T>) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const rowSelection: TableProps<T>['rowSelection'] = showCheckbox
@@ -32,7 +39,7 @@ const Table = <T extends { key: string }>({ data, columns, showCheckbox = true, 
           <Checkbox
             name="select-all"
             checked={data.length > 0 && selectedRowKeys.length === data.length}
-            onClick={() => {
+            onChange={() => {
               const newSelectedRowKeys = selectedRowKeys.length === data.length ? [] : data.map((item) => (item as T).key);
               setSelectedRowKeys(newSelectedRowKeys);
             }}
@@ -44,7 +51,7 @@ const Table = <T extends { key: string }>({ data, columns, showCheckbox = true, 
             <Checkbox
               name={record['key']}
               checked={checked}
-              onClick={() => {
+              onChange={() => {
                 const key = record['key'] as React.Key;
                 // 체크 확인
                 const newSelectedRowKeys = checked ? selectedRowKeys.filter((k) => k !== key) : [...selectedRowKeys, key];
@@ -58,7 +65,7 @@ const Table = <T extends { key: string }>({ data, columns, showCheckbox = true, 
 
   return (
     <TableWrapper>
-      <AntdTable rowSelection={rowSelection} columns={columns} dataSource={data} rowKey="key" pagination={pagination || false} />
+      <AntdTable rowSelection={rowSelection} columns={columns} dataSource={data} rowKey="key" pagination={pagination || false} {...props} />
     </TableWrapper>
   );
 };
