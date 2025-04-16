@@ -21,7 +21,14 @@ interface IMemberModal {
   onClose: () => void;
   onSubmit: (user: IUser) => void;
 }
-
+/**
+ * 회원 추가/수정 모달
+ * @param isModalOpen 모달 열림 여부
+ * @param editUser 수정할 회원 정보
+ * @param onClose 모달 닫기
+ * @param onSubmit 회원 추가/수정 제출
+ * @returns
+ */
 const MemberModal = ({ isModalOpen, editUser, onClose, onSubmit }: IMemberModal) => {
   const { token } = useToken();
   const {
@@ -44,7 +51,10 @@ const MemberModal = ({ isModalOpen, editUser, onClose, onSubmit }: IMemberModal)
 
   useEffect(() => {
     if (editUser) {
-      reset(editUser);
+      reset({
+        ...editUser,
+        job: jobListOption.find((item) => item.label === editUser.job)?.value || '',
+      });
       trigger();
     } else {
       reset({
