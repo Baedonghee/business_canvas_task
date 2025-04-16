@@ -13,6 +13,13 @@ interface ILabelFormField {
 
 const { useToken } = theme;
 
+/**
+ * 라벨 폼 필드
+ * @param label 라벨
+ * @param required 필수 여부
+ * @param children 자식 요소
+ * @param errorMessage 에러 메시지
+ */
 const LabelFormField = ({ label, required = false, children, errorMessage }: ILabelFormField) => {
   const { token } = useToken();
 

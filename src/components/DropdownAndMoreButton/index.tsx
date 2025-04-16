@@ -9,7 +9,13 @@ interface IDropdownAndMoreButton {
   onDelete: () => void;
   index: number;
 }
-
+/**
+ * 드롭다운 버튼
+ * @param onEdit 수정
+ * @param onDelete 삭제
+ * @param index 인덱스
+ * @returns
+ */
 const DropdownAndMoreButton = ({ onEdit, onDelete, index }: IDropdownAndMoreButton) => {
   return (
     <Dropdown

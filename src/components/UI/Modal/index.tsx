@@ -40,7 +40,13 @@ interface IModal extends AntdModalProps {
   title: string;
   footer: React.ReactNode;
 }
-
+/**
+ * 모달
+ * @param isModalOpen 모달 열림 여부
+ * @param children 자식 요소
+ * @param title 제목
+ * @param footer 푸터
+ */
 const Modal = ({ isModalOpen, children, title, footer, ...props }: IModal) => {
   return (
     <ModalWrapper title={<Text fontSize="14px">{title}</Text>} open={isModalOpen} footer={footer} {...props}>

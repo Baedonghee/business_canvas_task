@@ -7,6 +7,11 @@ type ITypographyProps = SpaceProps & LayoutProps & ColorProps & FlexboxProps & T
 
 const { Text: AntdText } = AntdTypography;
 
+/**
+ * 텍스트
+ * @param props 속성
+ * @returns
+ */
 const Text = styled(AntdText).withConfig({
   shouldForwardProp: (prop) => !['m', 'p', 'color', 'bg', 'display', 'fontSize', 'fontWeight', 'textAlign'].includes(prop),
 })<ITypographyProps>`

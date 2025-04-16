@@ -18,6 +18,13 @@ const TableWrapper = styled.div`
   }
 `;
 
+/**
+ * 테이블
+ * @param data 데이터
+ * @param columns 열
+ * @param showCheckbox 체크박스 표시 여부
+ * @param pagination 페이지네이션 여부
+ */
 const Table = <T extends { key: string }>({ data, columns, showCheckbox = true, pagination = false, ...props }: ITable<T>) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 

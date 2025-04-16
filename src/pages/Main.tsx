@@ -13,7 +13,7 @@ import Button from 'components/UI/Button';
 import Plus from 'components/UI/SVG/icons/plus';
 import Table from 'components/UI/Table';
 import TableFilter from 'components/UI/Table/TableFilter';
-import Typography from 'components/UI/Typography';
+import Typography from 'components/UI/Title';
 
 const { Header, Content } = Layout;
 const { useToken } = theme;
@@ -196,10 +196,8 @@ const Main = () => {
   };
 
   const handleUserSubmit = (user: IUser) => {
-    console.log(user);
     const updatedJobLabel = jobListOption.find((item) => item.value === user.job)?.label || '';
     const newUser = { ...user, job: updatedJobLabel };
-    // console.log(newUser);
     const users = userStorage.get();
     if (!editUser) {
       const newUsers = [...users, newUser];

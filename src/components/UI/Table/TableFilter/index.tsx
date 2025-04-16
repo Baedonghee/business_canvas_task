@@ -12,6 +12,12 @@ interface ITableFilter {
   onChange: (keys: React.Key[]) => void;
 }
 
+/**
+ * 테이블 필터
+ * @param filters 필터
+ * @param selectedKeys 선택된 키
+ * @param onChange 변경 이벤트
+ */
 const TableFilter = ({ filters, selectedKeys, onChange }: ITableFilter) => {
   const { token } = useToken();
   return (
