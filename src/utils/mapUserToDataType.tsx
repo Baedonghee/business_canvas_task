@@ -4,6 +4,14 @@ import { IUser, IUserDataType } from 'types/user';
 import DropdownAndMoreButton from 'components/DropdownAndMoreButton';
 import Checkbox from 'components/UI/Checkbox';
 
+/**
+ * 회원 데이터 타입 매핑
+ * @param user 회원 정보
+ * @param index 인덱스
+ * @param onEdit 수정
+ * @param onDelete 삭제
+ * @returns 회원 데이터 타입
+ */
 export const mapUserToDataType = (user: IUser, index: number, onEdit: (user: IUser, key: string) => void, onDelete: (index: number) => void): IUserDataType => {
   const key = (index + 1).toString();
 
