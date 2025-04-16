@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 import { DatePicker as AntdDatePicker, DatePickerProps } from 'antd';
 
 interface IDatePicker extends DatePickerProps {
@@ -11,16 +11,21 @@ interface IDatePicker extends DatePickerProps {
  * @param props 속성
  */
 const DatePicker = ({ todayHidden = false, ...props }: IDatePicker) => {
-  useEffect(() => {
-    const footer = document.querySelector('.ant-picker-footer') as HTMLElement;
-    if (footer) {
-      setTimeout(() => {
-        footer.style.display = todayHidden ? 'none' : 'block';
-      }, 100);
-    }
-  }, [todayHidden]);
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      if (open) {
+        setTimeout(() => {
+          const footer = document.querySelector('.ant-picker-footer') as HTMLElement;
+          if (footer) {
+            footer.style.display = todayHidden ? 'none' : 'block';
+          }
+        }, 0);
+      }
+    },
+    [todayHidden],
+  );
 
-  return <AntdDatePicker {...props} />;
+  return <AntdDatePicker {...props} onOpenChange={handleOpenChange} />;
 };
 
 export default DatePicker;
