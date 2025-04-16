@@ -12,6 +12,7 @@ import MemberModal from 'components/MemberModal';
 import Button from 'components/UI/Button';
 import Plus from 'components/UI/SVG/icons/plus';
 import Table from 'components/UI/Table';
+import TableFilter from 'components/UI/Table/TableFilter';
 import Typography from 'components/UI/Typography';
 
 const { Header, Content } = Layout;
@@ -28,28 +29,152 @@ const HeaderWrapper = styled(Header)<{ bgColor: string }>`
 
 const userStorage = createStorage<IUser>('user-data', db.data);
 
-const columns: ColumnsType<IUserDataType> = [
-  { title: '이름', dataIndex: 'name' },
-  { title: '메모', dataIndex: 'memo' },
-  { title: '가입일', dataIndex: 'joinDate' },
-  { title: '직업', dataIndex: 'job' },
-  { title: '이메일 수신 동의', dataIndex: 'isEmail' },
-  { title: '', dataIndex: 'more', width: 48, align: 'center' },
-];
-
 const Main = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const {
-    token: { colorBgContainer },
-  } = useToken();
+  const { token } = useToken();
 
   const [data, setData] = useState<IUserDataType[]>([]);
+  const [columns, setColumns] = useState<ColumnsType<IUserDataType>>([]);
   const [editUser, setEditUser] = useState<IEditUser | null>(null);
+  const [filterKeys, setFilterKeys] = useState<{ [key: string]: React.Key[] }>({});
 
-  const handleDelete = useCallback((index: number) => {
-    userStorage.remove(index);
-    setData((prevData) => prevData.filter((_, i) => i !== index));
-  }, []);
+  useEffect(() => {
+    const users = userStorage.get();
+    const filtered = users.filter((user) => {
+      return Object.keys(filterKeys).every((key) => {
+        const filterValues = filterKeys[key];
+        if (filterValues.length === 0) return true;
+        return filterValues.includes(String(user[key as keyof IUser]));
+      });
+    });
+
+    const mapped = filtered.map((user, i) => mapUserToDataType(user, i, handleEdit, handleDelete));
+
+    setData(mapped);
+    setColumns(createColumns(users, filterKeys));
+  }, [filterKeys]);
+
+  const createColumns = (sourceData: IUser[], filters: typeof filterKeys): ColumnsType<IUserDataType> => {
+    const jobFilters = Array.from(new Set(sourceData.map((d) => d.job))).map((job) => ({
+      text: job,
+      value: job,
+    }));
+
+    const nameFilters = Array.from(new Set(sourceData.map((d) => d.name))).map((name) => ({
+      text: name,
+      value: name,
+    }));
+
+    const memoFilters = Array.from(new Set(sourceData.map((d) => d.memo).filter(Boolean))).map((memo) => {
+      return {
+        text: memo,
+        value: memo,
+      };
+    });
+
+    const joinDateFilters = Array.from(new Set(sourceData.map((d) => d.joinDate))).map((date) => ({
+      text: date,
+      value: date,
+    }));
+
+    const isEmailFilters = [
+      { text: '선택됨', value: 'true' },
+      { text: '선택 안함', value: 'false' },
+    ];
+
+    return [
+      {
+        title: '이름',
+        dataIndex: 'name',
+        filters: nameFilters,
+        filteredValue: filters.name || [],
+        filterDropdown: ({ setSelectedKeys, selectedKeys }) => (
+          <TableFilter
+            filters={nameFilters}
+            selectedKeys={selectedKeys}
+            onChange={(keys) => {
+              setSelectedKeys(keys);
+              setFilterKeys((prev) => ({ ...prev, name: keys }));
+            }}
+          />
+        ),
+      },
+      {
+        title: '메모',
+        dataIndex: 'memo',
+        filters: memoFilters,
+        filteredValue: filters.memo || [],
+        filterDropdown: ({ setSelectedKeys, selectedKeys }) => (
+          <TableFilter
+            filters={memoFilters}
+            selectedKeys={selectedKeys}
+            onChange={(keys) => {
+              setSelectedKeys(keys);
+              setFilterKeys((prev) => ({ ...prev, memo: keys }));
+            }}
+          />
+        ),
+      },
+      {
+        title: '가입일',
+        dataIndex: 'joinDate',
+        filters: joinDateFilters,
+        filteredValue: filters.joinDate || [],
+        filterDropdown: ({ setSelectedKeys, selectedKeys }) => (
+          <TableFilter
+            filters={joinDateFilters}
+            selectedKeys={selectedKeys}
+            onChange={(keys) => {
+              setSelectedKeys(keys);
+              setFilterKeys((prev) => ({ ...prev, joinDate: keys }));
+            }}
+          />
+        ),
+      },
+      {
+        title: '직업',
+        dataIndex: 'job',
+        filters: jobFilters,
+        filteredValue: filters.job || [],
+        filterDropdown: ({ setSelectedKeys, selectedKeys }) => (
+          <TableFilter
+            filters={jobFilters}
+            selectedKeys={selectedKeys}
+            onChange={(keys) => {
+              setSelectedKeys(keys);
+              setFilterKeys((prev) => ({ ...prev, job: keys }));
+            }}
+          />
+        ),
+      },
+      {
+        title: '이메일 수신 동의',
+        dataIndex: 'isEmail',
+        filters: isEmailFilters,
+        filteredValue: filters.isEmail || [],
+        filterDropdown: ({ setSelectedKeys, selectedKeys }) => (
+          <TableFilter
+            filters={isEmailFilters}
+            selectedKeys={selectedKeys}
+            onChange={(keys) => {
+              setSelectedKeys(keys);
+              setFilterKeys((prev) => ({ ...prev, isEmail: keys }));
+            }}
+          />
+        ),
+      },
+      { title: '', dataIndex: 'more', width: 48, align: 'center' },
+    ];
+  };
+
+  const handleDelete = useCallback(
+    (index: number) => {
+      userStorage.remove(index);
+      const users = userStorage.get();
+      setColumns(createColumns(users, filterKeys));
+    },
+    [filterKeys],
+  );
 
   const handleEdit = useCallback((user: IUser, key: string) => {
     setEditUser({ key, user });
@@ -58,13 +183,12 @@ const Main = () => {
 
   useEffect(() => {
     const users = userStorage.get();
-    const newData = users.map((user, index) => mapUserToDataType(user, index, handleEdit, handleDelete));
-    setData(newData);
-  }, [handleDelete, handleEdit]);
+    const mapped = users.map((user, i) => mapUserToDataType(user, i, handleEdit, handleDelete));
+    setData(mapped);
+    setColumns(createColumns(users, filterKeys));
+  }, []);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
+  const handleOpenModal = () => setIsModalOpen(true);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -72,24 +196,24 @@ const Main = () => {
   };
 
   const handleUserSubmit = (user: IUser) => {
-    const newUser = {
-      ...user,
-      job: jobListOption.find((item) => item.value === user.job)?.label || '',
-    };
-
+    console.log(user);
+    const updatedJobLabel = jobListOption.find((item) => item.value === user.job)?.label || '';
+    const newUser = { ...user, job: updatedJobLabel };
+    // console.log(newUser);
+    const users = userStorage.get();
     if (!editUser) {
-      const updatedUsers = [...userStorage.get(), newUser];
-      userStorage.set(updatedUsers);
-      const newIndex = data.length;
+      const newUsers = [...users, newUser];
+      userStorage.set(newUsers);
 
-      setData([...data, mapUserToDataType(newUser, newIndex, handleEdit, handleDelete)]);
+      setColumns(createColumns(newUsers, filterKeys));
+      setData(newUsers.map((user, i) => mapUserToDataType(user, i, handleEdit, handleDelete)));
     } else {
-      const index = data.findIndex((item) => item.key === editUser.key);
+      const index = data.findIndex((d) => d.key === editUser.key);
       if (index !== -1) {
-        const updatedUsers = userStorage.get().map((item, i) => (i === index ? user : item));
-        userStorage.set(updatedUsers);
-
-        setData((prevData) => prevData.map((item, i) => (i === index ? mapUserToDataType(newUser, index, handleEdit, handleDelete) : item)));
+        const newUsers = users.map((u, i) => (i === index ? newUser : u));
+        userStorage.set(newUsers);
+        setColumns(createColumns(newUsers, filterKeys));
+        setData(newUsers.map((user, i) => mapUserToDataType(user, i, handleEdit, handleDelete)));
       }
     }
 
@@ -100,7 +224,7 @@ const Main = () => {
   return (
     <>
       <MemberModal isModalOpen={isModalOpen} onClose={handleCloseModal} onSubmit={handleUserSubmit} editUser={editUser?.user} />
-      <HeaderWrapper bgColor={colorBgContainer}>
+      <HeaderWrapper bgColor={token.colorBgContainer}>
         <Typography level={5} mb="0px">
           회원 목록
         </Typography>
