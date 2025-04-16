@@ -1,9 +1,7 @@
 type StorageEngine<T> = {
   get: () => T[];
   set: (value: T[]) => void;
-  add: (item: T) => void;
   remove: (index: number) => void;
-  clear: () => void;
   init: (initialData: T[]) => void;
 };
 
@@ -15,14 +13,8 @@ const createMemoryStorage = <T>(): StorageEngine<T> => {
     set: (value) => {
       store = value;
     },
-    add: (item) => {
-      store.push(item);
-    },
     remove: (index) => {
       store.splice(index, 1);
-    },
-    clear: () => {
-      store = [];
     },
     init: (initialData: T[]) => {
       if (store.length === 0) {
@@ -40,18 +32,10 @@ const createLocalStorage = <T>(key: string): StorageEngine<T> => ({
   set: (value) => {
     localStorage.setItem(key, JSON.stringify(value));
   },
-  add: (item) => {
-    const current = JSON.parse(localStorage.getItem(key) || '[]');
-    current.push(item);
-    localStorage.setItem(key, JSON.stringify(current));
-  },
   remove: (index) => {
     const current = JSON.parse(localStorage.getItem(key) || '[]');
     current.splice(index, 1);
     localStorage.setItem(key, JSON.stringify(current));
-  },
-  clear: () => {
-    localStorage.removeItem(key);
   },
   init: (initialData: T[]) => {
     const raw = localStorage.getItem(key);
