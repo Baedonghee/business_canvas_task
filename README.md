@@ -1,54 +1,98 @@
-# React + TypeScript + Vite
+# 🧩 Member Management App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+비즈니스 캔버스 과제입니다.
+Ant Design 기반 UI와 React + TypeScript + Vite로 구축되었습니다.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠 기술 스택
 
-## Expanding the ESLint configuration
+- ⚛️ React
+- ⚡️ Vite
+- 🟦 TypeScript
+- 💄 Ant Design (antd)
+- 🎨 styled-components
+- 📦 Custom Storage Utility (`utils/storage.ts`)
+- 🧱 Custom UI Components (`components/UI`)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 📁 프로젝트 구조
+
+```bash
+src/
+├── components/
+│ ├── DropdownAndMoreButton/ # More 드랍다운
+│ ├── LabelFormField/ # 라벨있는 Form
+│ ├── MemberModal/ # 회원 정보 모달
+│ └── UI/ # 공통 UI 컴포넌트
+    ├── Button/
+    ├── Checkbox/
+    ├── DatePicker/
+    ├── Flex/
+    ├── Modal/
+    ├── SVG/
+    ├── Table/
+    │ └── TableFilter/
+    ├── Text/
+    └── Title/
+├── model/
+│ └── job-list.ts # 직업 옵션 정의
+├── pages/
+│ └── Main.tsx # 메인 페이지 (회원 목록)
+├── styles/
+│ ├── GlobalStyle.ts
+│ └── theme.d.ts
+├── types/
+│ └── user.ts # 사용자 관련 타입 정의
+├── utils/
+│ ├── mapUserToDataType.tsx # 사용자 데이터를 테이블용으로 변환
+│ └── storage.ts # 로컬 스토리지 유틸리티
+├── App.tsx
+├── main.tsx
+└── vite-env.d.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🚀 시작하기
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+### 1. 패키지 설치
+
+```bash
+yarn install
 ```
+
+### 2. 개발 서버 실행
+
+```bash
+yarn dev
+```
+
+### 3. 빌드
+
+```bash
+yarn build
+```
+
+---
+
+## ⚙️ 환경 변수 설정
+
+루트에 `.env` 파일을 생성하고 다음과 같이 설정하세요:
+
+```env
+VITE_STORAGE=in-memory
+# 또는 로컬 스토리지를 사용할 경우
+# VITE_STORAGE=local-storage
+```
+
+---
+
+## 💡 주요 기능
+
+- 회원 목록 출력 및 필터링
+- 필터 항목: 이름, 메모, 가입일, 직업, 이메일 수신 동의 여부
+- 커스텀 필터 드롭다운 UI
+- 회원 정보 추가/수정/삭제
+- 로컬 스토리지 기반 데이터 저장
